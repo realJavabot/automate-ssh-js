@@ -30,4 +30,4 @@ You can save or open the output as a csv by pressing "SAVE".
 
 At the moment "Uses IPMI" does nothing. The general requirements can be ignored as well, just make sure the commands in request.json are correct before running.
 
-In order to be properly parsed the commands must have each $ written as \\$ and each space in a grep is written "\\ ".
+In order to be properly parsed the commands must have each $ written as \\\\$ and each space in a grep is written "\\\\ ".
