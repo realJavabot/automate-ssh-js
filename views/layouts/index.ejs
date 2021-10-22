@@ -1,0 +1,153 @@
+<html>
+	<head>
+<style>
+body{
+	background-color:#555;
+	color:#DDD;
+}
+#list{
+	padding: 0;
+	display: inline-flex;
+	margin: 0;
+}
+.colored{
+	background-color: #DDD;
+}
+.colored:first-child{
+	background-color: #bbb9b9;
+	font-weight: bold;
+}
+.colored div{
+	height:20px;
+	overflow: hidden;
+	border: 1px black solid;
+	color: #222;
+	font-family: Arial;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-size: 16;
+}
+#controls{
+	vertical-align:top;
+	display:inline-block;
+	padding: 30px;
+	text-align: center;
+}
+#leftside{
+	grid-column: 1 / 1;
+	width:100%;
+	height:100%;
+	background-color:#31282c;
+}
+#info{
+	padding:20px;
+}
+button{
+	width:48%;
+	margin-top:5px;
+}
+select{
+	margin-top: 5px;
+	width: 100%;
+}
+textarea{
+	width:100%;
+}
+#controls *{
+	display: inline-block;
+	vertical-align: top;
+}
+#gridcon{
+	display: grid;
+	grid-template-columns: 35% auto;
+	position: absolute;
+	left: 0px;
+	top: 0;
+	height: 100%;
+	width:100%;
+}
+#listcon{
+	grid-column: 2 / 2;
+	padding:30px;
+	overflow:scroll;
+}
+.check{
+	margin-top:30px;
+	text-align:left;
+}
+</style>
+	</head>
+	<body>
+	<div id="gridcon">
+	<div id="leftside">
+		<div id="controls">
+				<textarea id="ips" placeholder="comma or newline separated list of ip addresses, aka 10.0.0.1,10.0.0.2,etc."><%= ips %></textarea>
+				<select id="OS" onload="lod(this,'<%= state %>')">
+					<option value="dell" <%= (state == 'dell')? 'selected' : '' %>>Dell/SMC (deb)</option>
+					<option value="ubuntu" <%= (state == 'ubuntu')? 'selected' : '' %>>Ubuntu</option>
+					<option value="hp" <%= (state == 'hp')? 'selected' : '' %>>HP (deb)</option>
+					<option value="root" <%= (state == 'root')? 'selected' : '' %>>Root (CentOS)</option>
+				</select>
+				<button onClick="download('OC.csv', 'csv')">SAVE</button>
+				<button onClick="fetchit()">Fetch Inventory</button>
+				<br>
+				<div class="check">
+					<input type="checkbox" id="ipmi" checked="true">
+					<label for="ipmi">Uses IPMI</label>
+				</div>
+		</div>
+		<div id="info">
+			<b>General Requirements:</b>
+			<ul>
+			<li>Dell/SMC: everything should work on the live image</li>
+			<li>HP: download ssacli</li>
+			<li>Ubuntu: download ipmitool and storcli, storcli should be moved/linked to the root directory</li>
+			</ul>
+		</div>
+	</div>
+	<div id="listcon">
+		<div id="list">
+			<% if(data){%>
+				<div class="colored">
+					<% Object.keys(data[0]).forEach(k=>{%>
+					<div><%= k %></div>
+					<% }) %>
+				</div>
+				<% for( var i = 0; i < data.length; i++ ){%>
+					<div class="colored">
+						<% Object.keys(data[i]).forEach(k=>{%>
+							<div><%= data[i][k] %></div>
+						<% }) %>
+					</div>
+				<% } %>
+			<% } %>	
+		</div>
+	</div>
+	</div>
+	<script>
+
+	function download(fileName, contentType) {
+		var a = document.createElement("a");
+		var data = document.getElementsByClassName("colored");
+		var content = "";
+		for([_,column] of Object.entries(document.getElementsByClassName("colored"))){
+			for([_,cell] of Object.entries(column.getElementsByTagName("DIV"))){
+				content += cell.innerHTML + ",";
+			};
+			content += "\n";
+		};
+		var file = new Blob([content], {type: contentType});
+		a.href = URL.createObjectURL(file);
+		a.download = fileName;
+		a.click();
+	}
+	function fetchit(){
+		document.location.pathname = "/inv/"
+			+ document.getElementsByTagName("textarea")[0].value.replace(/\n/g,",")
+			+	","	+ document.getElementById("OS").value
+			+	","	+ Number(document.getElementById("ipmi").checked);
+	}
+
+	</script>
+	</body>
+</html>

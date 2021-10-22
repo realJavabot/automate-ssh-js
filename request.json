@@ -1,0 +1,39 @@
+{
+  "request": {
+    "ASA SN":          "dmidecode -s system-serial-number",
+    "System Model":    "dmidecode -s baseboard-product-name",
+    "Motherboard SN":  "dmidecode -s baseboard-serial-number",
+    "Chassis SN":      "dmidecode -s chassis-serial-number",
+    "Memory":          "free -h | grep Mem | awk '{print \\$2}'",
+    "CPU":             "dmidecode -s processor-version | uniq -c",
+    "Disk":            "for l in \\$(ls /dev/sd?);do smartctl -a \\$l   | grep -i device\\ model | awk '{print substr(\\$0,index(\\$0,\\$3))}'>>t; done; for l in \\$(ls /dev/nvme?);do smartctl -a \\$l | grep -i model\\ number | awk '{print substr(\\$0,index(\\$0,\\$3))}'>>t; done; ./storcli64 /call/eall/sall show all        | grep -i model\\ number | awk '{print substr(\\$0,index(\\$0,\\$4))}'>>t; echo \\$(uniq -c t); sudo rm t;",
+    "BIOS":            "dmidecode -s bios-version",
+    "IPMI":            "ipmitool mc info | grep -i firmware\\ revision | awk '{print \\$4}'",
+    "Raid Controller firmware":  
+                      "./storcli64 /call show all | grep -i firmware\\ version | awk '{print \\$4}'",
+    "Disk firmware":  "for l in \\$(ls /dev/sd?);do smartctl -a \\$l   | grep -i firmware\\ version     | awk '{print substr(\\$0,index(\\$0,\\$3))}'>>t; done; for l in \\$(ls /dev/nvme?);do smartctl -a \\$l | grep -i firmware\\ version:    | awk '{print substr(\\$0,index(\\$0,\\$3))}'>>t; done; ./storcli64 /call/eall/sall show all        | grep -i firmware              | awk '{print \\$4}'>>t; echo \\$(uniq -c t); sudo rm t;",
+		"MAC": "ip a | grep link/ether | awk '{print \\$2}'",
+    "BMC MAC":        "ipmitool lan print | grep MAC\\ Address | awk '{print \\$4}'",
+    "IPMI IP":        "ipmitool lan print | grep IP\\ Address | grep 10 | awk '{print \\$4}'"
+  },
+
+  "cred_ubuntu": {
+    "login":    "ubuntu",
+    "password": "ubuntu123"
+  },
+
+  "cred_dell": {
+    "login":    "root",
+    "password": "ocptester"
+  },
+
+  "cred_root": {
+    "login":    "root",
+    "password": "abc123"
+  },
+  
+  "cred_hp": {
+    "login":    "root",
+    "password": "abc123"
+  }
+}
