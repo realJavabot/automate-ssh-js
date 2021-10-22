@@ -18,11 +18,11 @@ Enter the ips comma or newline deliminated (no spaces) as in:
 
 or
 
-`10.0.0.1
-
+```
+10.0.0.1
 10.0.0.2
-
-10.0.0.3 `
+10.0.0.3
+```
 
 Use the dropdown to select proper login credentials (check request.json) and press "Fetch Inventory". This will take a couple of seconds. The output will be displayed on the right once it has finished, and any errors will be logged to the output of the command you ran (`./server.js`).
 
